@@ -156,11 +156,10 @@ def calc_error(pred_hat, pred):
     N = pred.size(0)
     T = pred.size(1)
     err_all = torch.pow((pred_hat - pred) / ss, 2).sum(dim=2).sqrt()  # N x T
-    FDEs = err_all.sum(dim=0).item() / N
-    ADEs = torch.cumsum(FDEs)
-    for ii in range(T):
-        ADEs[ii] /= (ii + 1)
-    return ADEs.data.cpu().numpy(), FDEs.data().cpu().numpy()
+    FDEs = err_all.mean(dim=0)  # T
+    ADEs = torch.cumsum(FDEs, dim=0)
+    ADEs /= torch.arange(1, T + 1, device=err_all.device)
+    return ADEs.cpu().numpy(), FDEs.cpu().numpy()
 
 
 class AttentionPooling(nn.Module):
