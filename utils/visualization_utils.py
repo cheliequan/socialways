@@ -4,6 +4,12 @@ import numpy as np
 import matplotlib.pyplot as plt
 from PIL import Image
 
+
+def _cv2():
+    import cv2
+
+    return cv2
+
 # import cv2
 # POS_MSEC = cv2.CAP_PROP_POS_MSEC
 # POS_FRAMES = cv2.CAP_PROP_POS_FRAMES
@@ -31,6 +37,8 @@ class Display:
         obsfile = os.path.join(datadir, "obsmat.txt")
         destfile = os.path.join(datadir, "destinations.txt")
 
+
+        cv2 = _cv2()
 
         self.cap = cv2.VideoCapture(os.path.join(datadir, 'zara01.avi'))
         self.H = np.loadtxt(Hfile)
@@ -62,14 +70,14 @@ class Display:
         self.orig_frame = []
 
     def set_frame(self, frame):
-        self.cap.set(POS_FRAMES, frame)
+        self.cap.set(_cv2().CAP_PROP_POS_FRAMES, frame)
 
     def back_one_frame(self):
-        frame_num = int(self.cap.get(POS_FRAMES))
+        frame_num = int(self.cap.get(_cv2().CAP_PROP_POS_FRAMES))
         self.set_frame(frame_num - 2)
 
     def reset_frame(self):
-        frame_num = int(self.cap.get(POS_FRAMES))
+        frame_num = int(self.cap.get(_cv2().CAP_PROP_POS_FRAMES))
         self.set_frame(frame_num - 1)
 
     def next_sample(self):
@@ -88,18 +96,24 @@ class Display:
         if self.cap.isOpened():
             self.set_frame(frame_id)
             ret, self.output = self.cap.read()
+            cv2 = _cv2()
+
             self.output = cv2.resize(self.output, (0, 0), fx=self.scale, fy=self.scale, interpolation=cv2.INTER_LINEAR)
             self.orig_frame = self.output.copy()
             return ret
         return False
 
     def plot_ped(self, pos=(0, 0), pid=-1, color=(0, 0, 192)):
+        cv2 = _cv2()
+
         pix_loc = to_pixels(self.Hinv, np.array([pos[0], pos[1], 1.]))
         cv2.circle(self.output, pix_loc, 5, color, 1, cv2.LINE_AA)
         if pid >= 0:
             cv2.putText(self.output, '%d' % pid, pix_loc, cv2.FONT_HERSHEY_SCRIPT_SIMPLEX, 0.5, (0,0,200), 2)
 
     def plot_path(self, path, pid=-1, args=''):
+        cv2 = _cv2()
+
         color = (255, 255, 255)
         if args.startswith('b'):
             color = (255, 0, 0)
@@ -133,9 +147,13 @@ class Display:
             #     cv2.putText(self.output, '%d' % pid, pix_loc, cv2.FONT_HERSHEY_SCRIPT_SIMPLEX, 1, (0, 0, 200), 2)
 
     def add_orig_frame(self, alpha=0.5):
+        cv2 = _cv2()
+
         self.output = cv2.addWeighted(self.orig_frame, alpha, self.output, 1-alpha, 0)
 
     def show(self, title='frame'):
+        cv2 = _cv2()
+
         # plt.imshow(self.output)
         # plt.show()
         cv2.imshow(title, self.output)
@@ -202,6 +220,8 @@ def plot_diag():
 
 
 def draw_text(frame, pt, frame_txt):
+    cv2 = _cv2()
+
     font = cv2.FONT_HERSHEY_SIMPLEX
     scale = 0.6
     thickness = 1
@@ -230,6 +250,8 @@ def crossline(curr, prev, length):
 
 
 def draw_path(frame, path, color):
+    cv2 = _cv2()
+
     if path.shape[0] > 0:
         prev = path[0]
         for curr in path[1:]:
@@ -242,6 +264,8 @@ def draw_path(frame, path, color):
 
 
 def draw_waypoints(frame, points, color):
+    cv2 = _cv2()
+
     for loc in ((int(y), int(x)) for x, y, z in points):
         cv2.circle(frame, loc, 3, color, -1, cv2.LINE_AA)
 

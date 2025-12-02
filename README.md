@@ -62,6 +62,23 @@ For having fun and seeing the animation of toy agents you can call:
 $ python3 create_toy.py --anim
 ```
 
+## How to Build a BIWI NPZ Dataset
+
+Use `create_dataset.py` to convert a BIWI-style annotation file (`obsmat.txt`) into the NPZ format expected by `train.py`:
+
+```
+$ python3 create_dataset.py --annot /path/to/obsmat.txt --output ../data-8-12.npz
+```
+
+Key options:
+
+- `--annot /path/to/obsmat.txt` (required): BIWI observation matrix text file.
+- `--output ../data-8-12.npz` (optional): Destination NPZ filename.
+- `--obs-len 8` / `--pred-len 12` (optional): Observation/prediction horizons.
+- `--downsample 1` (optional): Keep one frame every N; use `4` for the 2.5 fps BIWI default.
+
+The script will validate the annotation path and report the saved NPZ location when finished.
+
 
 ## How to Train
 To train the model, please edit the train.py to select the dataset you want to train the model on. The next few lines define some of the most critical parameters values. Then execute:

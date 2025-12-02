@@ -34,13 +34,13 @@ def create_samples(n_samples, n_conditions, n_modes, n_per_batch=2):
 
         # Third point: located on a circle of radius 2
         # Normal-distributed angle deviation are introduced as p2_turn_rand
-        p2_turn_rand = (np.random.rand(1) - 0.5) * 4 * np.pi / 180
+        p2_turn_rand = (np.random.rand() - 0.5) * 4 * np.pi / 180
         x2 = np.cos(data_angle + fixed_turn + p2_turn_rand) * 2
         y2 = np.sin(data_angle + fixed_turn + p2_turn_rand) * 2
 
         # Fourth point: located on a circle of radius 1
         # Normal-distributed angle deviation are introduced as p3_turn_rand
-        p3_turn_rand = (np.random.rand(1) - 0.5) * 6 * np.pi / 180
+        p3_turn_rand = (np.random.rand() - 0.5) * 6 * np.pi / 180
         x3 = np.cos(data_angle + fixed_turn + p2_turn_rand + p3_turn_rand)
         y3 = np.sin(data_angle + fixed_turn + p2_turn_rand + p3_turn_rand)
 
