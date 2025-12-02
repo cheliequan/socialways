@@ -61,6 +61,7 @@ dataset_name = args.dataset
 model_name = args.model
 input_file = args.input_file
 model_file = '../trained_models/' + model_name + '-' + dataset_name + '.pt'
+os.makedirs(os.path.dirname(model_file), exist_ok=True)
 
 # FIXME: ====== training hyper-parameters ======
 # Unrolled GAN
