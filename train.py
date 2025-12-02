@@ -47,6 +47,9 @@ parser.add_argument('--dataset', '--data',
                     default='hotel',
                     choices=['hotel'],
                     help='pick a specific dataset (default: "hotel")')
+parser.add_argument('--input-file', '--input',
+                    default=os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', 'hotel-8-12.npz'),
+                    help='path to the NPZ dataset file (default: ../hotel-8-12.npz)')
 parser.add_argument('--device', '--dev',
                     default='cpu', choices=['cpu', 'cuda', 'auto'],
                     help='select training device (default: cpu)')
@@ -56,7 +59,7 @@ args = parser.parse_args()
 # ========== set input/output files ============
 dataset_name = args.dataset
 model_name = args.model
-input_file = '../hotel-8-12.npz'
+input_file = args.input_file
 model_file = '../trained_models/' + model_name + '-' + dataset_name + '.pt'
 
 # FIXME: ====== training hyper-parameters ======
@@ -98,6 +101,11 @@ if device.type == 'cuda' and not torch.cuda.is_available():
     raise ValueError('CUDA requested but not available')
 
 print('Using device:', device)
+if not os.path.isfile(input_file):
+    raise FileNotFoundError(
+        f"Dataset file not found: {input_file}. "
+        "Generate one with `python create_toy.py --npz <output_path>` or provide an existing file via --input-file."
+    )
 
 data = np.load(input_file)
 # Data come as NxTx2 numpy nd-arrays where N is the number of trajectories,
