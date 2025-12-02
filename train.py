@@ -483,7 +483,7 @@ def train():
             obsv_4d, pred_4d = get_traj_4d(obsv, pred)
             zeros = Variable(torch.zeros(bs, 1, device=device) + np.random.uniform(0, 0.1), requires_grad=False)
             ones = Variable(torch.ones(bs, 1, device=device) * np.random.uniform(0.9, 1.0), requires_grad=False)
-            noise = torch.FloatTensor(torch.rand(bs, noise_len, device=device))
+            noise = torch.rand(bs, noise_len, device=device)
 
             # ============== Train Discriminator ================
             for u in range(n_unrolling_steps + 1):
@@ -594,7 +594,7 @@ def test(n_gen_samples=20, linear=False, write_to_file=None, just_one=False):
                 all_20_errors.append(err_all.unsqueeze(0))
             else:
                 for kk in range(n_gen_samples):
-                    noise = torch.FloatTensor(torch.rand(bs, noise_len, device=device))
+                    noise = torch.rand(bs, noise_len, device=device)
                     pred_hat_4d = predict(obsv, noise, n_next)
                     all_20_preds.append(pred_hat_4d.unsqueeze(0))
                     err_all = torch.pow((pred_hat_4d[:, :, :2] - pred) / ss, 2).sum(dim=2, keepdim=True).sqrt()
